@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% block title %}Destinations - WanderLux{% endblock %}
+{% block content %}
+
+<div class="page-hero">
+    <div class="container">
+        <h1>Explore Destinations</h1>
+        <p>Discover handpicked places across India</p>
+        <div class="breadcrumb"><a href="/">Home</a> / Destinations</div>
+    </div>
+</div>
+
+<div class="filter-bar">
+    <div class="filter-inner">
+        <span class="filter-label">Filter:</span>
+        <a href="{{ url_for('destinations') }}" class="filter-btn {% if not selected_category %}active{% endif %}">All</a>
+        {% for cat in categories %}
+        <a href="{{ url_for('destinations', category=cat.category) }}" 
+           class="filter-btn {% if selected_category==cat.category %}active{% endif %}">{{ cat.category }}</a>
+        {% endfor %}
+        <form method="GET" action="{{ url_for('destinations') }}" style="margin-left:auto;display:flex;gap:8px">
+            {% if selected_category %}<input type="hidden" name="category" value="{{ selected_category }}">{% endif %}
+            <input type="text" name="search" value="{{ search }}" placeholder="Search..." class="search-input">
+            <button type="submit" class="btn btn-primary btn-sm">Search</button>
+        </form>
+    </div>
+</div>
+
+<section class="section">
+    <div class="container">
+        {% if destinations %}
+        <p style="color:var(--text-muted);margin-bottom:24px;font-size:14px">Showing {{ destinations|length }} destinations{% if selected_category %} in <strong>{{ selected_category }}</strong>{% endif %}{% if search %} for "<strong>{{ search }}</strong>"{% endif %}</p>
+        <div class="destinations-grid">
+            {% for dest in destinations %}
+            <article class="dest-card" style="animation-delay: {{ loop.index0 * 0.08 }}s">
+                <div class="dest-img-wrap">
+                    <img src="{{ dest.image_url }}" alt="{{ dest.name }}" loading="lazy">
+                    <div class="dest-category">{{ dest.category }}</div>
+                    <div class="dest-rating"><i class="fas fa-star"></i> {{ dest.rating }}</div>
+                </div>
+                <div class="dest-body">
+                    <div class="dest-location"><i class="fas fa-map-marker-alt"></i> {{ dest.city }}, {{ dest.country }}</div>
+                    <h3 class="dest-name">{{ dest.name }}</h3>
+                    <p class="dest-desc">{{ dest.description[:100] }}...</p>
+                    <div class="dest-footer">
+                        <div class="dest-price">
+                            <span class="price-from">from</span>
+                            <span class="price-val">₹{{ '{:,.0f}'.format(dest.price_per_person) }}</span>
+                            <span class="price-per">/person</span>
+                        </div>
+                        <div style="display:flex;gap:8px">
+                            <a href="{{ url_for('destination_detail', dest_id=dest.id) }}" class="btn btn-outline btn-sm">Details</a>
+                            <a href="{{ url_for('book', dest_id=dest.id) }}" class="btn btn-primary btn-sm">Book</a>
+                        </div>
+                    </div>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <i class="fas fa-map-marked-alt"></i>
+            <h3>No destinations found</h3>
+            <p>Try changing your filter or search query</p>
+            <a href="{{ url_for('destinations') }}" class="btn btn-primary" style="margin-top:16px">View All</a>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

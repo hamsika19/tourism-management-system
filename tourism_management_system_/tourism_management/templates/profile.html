@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block title %}My Profile - WanderLux{% endblock %}
+{% block content %}
+<div class="profile-page">
+    <div class="profile-header">
+        <div class="profile-avatar">{{ user.name[0] }}</div>
+        <div class="profile-name">{{ user.name }}</div>
+        <p style="opacity:0.8;margin-top:4px">{{ user.email }}</p>
+        <div style="display:flex;justify-content:center;gap:24px;margin-top:20px">
+            <div style="text-align:center">
+                <div style="font-size:24px;font-weight:700;font-family:var(--font-display)">{{ total_bookings }}</div>
+                <div style="font-size:13px;opacity:0.8">Total Trips</div>
+            </div>
+        </div>
+    </div>
+    <div class="profile-card">
+        <h3>Account Details</h3>
+        <div class="info-row"><span>Full Name</span><span>{{ user.name }}</span></div>
+        <div class="info-row"><span>Email</span><span>{{ user.email }}</span></div>
+        <div class="info-row"><span>Phone</span><span>{{ user.phone or 'Not provided' }}</span></div>
+        <div class="info-row"><span>Member Since</span><span>{{ user.created_at[:10] }}</span></div>
+        <div class="info-row"><span>Account Type</span><span>{{ user.role.title() }}</span></div>
+    </div>
+    <div style="display:flex;gap:12px;margin-top:8px">
+        <a href="{{ url_for('my_bookings') }}" class="btn btn-primary btn-lg" style="flex:1;justify-content:center">
+            <i class="fas fa-suitcase"></i> View My Bookings
+        </a>
+        <a href="{{ url_for('logout') }}" class="btn btn-outline btn-lg" style="flex:1;justify-content:center">
+            <i class="fas fa-sign-out-alt"></i> Logout
+        </a>
+    </div>
+</div>
+{% endblock %}

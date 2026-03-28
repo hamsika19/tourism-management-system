@@ -1,0 +1,195 @@
+{% extends 'base.html' %}
+{% block title %}WanderLux - Discover India's Beauty{% endblock %}
+{% block content %}
+
+<!-- HERO -->
+<section class="hero">
+    <div class="hero-bg">
+        <div class="hero-overlay"></div>
+        <video class="hero-video" autoplay muted loop playsinline>
+            <source src="https://cdn.coverr.co/videos/coverr-aerial-view-of-a-beach-5693/1080p.mp4" type="video/mp4">
+        </video>
+    </div>
+    <div class="hero-content">
+        <div class="hero-badge"><i class="fas fa-star"></i> India's #1 Travel Platform</div>
+        <h1 class="hero-title">Explore the <em>World's</em><br>Most Beautiful Places</h1>
+        <p class="hero-sub">Handcrafted journeys through India's most breathtaking destinations. Book with confidence.</p>
+        <div class="search-bar">
+            <div class="search-field">
+                <i class="fas fa-search"></i>
+                <input type="text" id="heroSearch" placeholder="Search destinations, cities..." autocomplete="off">
+                <div class="search-results" id="searchResults"></div>
+            </div>
+            <a href="{{ url_for('destinations') }}" class="btn btn-primary btn-lg">Explore Now</a>
+        </div>
+        <div class="hero-tags">
+            <a href="{{ url_for('destinations', category='Beach') }}" class="tag">🏖️ Beach</a>
+            <a href="{{ url_for('destinations', category='Adventure') }}" class="tag">🏔️ Adventure</a>
+            <a href="{{ url_for('destinations', category='Heritage') }}" class="tag">🏛️ Heritage</a>
+            <a href="{{ url_for('destinations', category='Nature') }}" class="tag">🌿 Nature</a>
+        </div>
+    </div>
+    <div class="hero-scroll"><i class="fas fa-chevron-down"></i></div>
+</section>
+
+<!-- STATS -->
+<section class="stats-bar">
+    <div class="stats-inner">
+        <div class="stat"><span class="stat-num" data-target="{{ stats.destinations }}">0</span><span class="stat-label">Destinations</span></div>
+        <div class="stat-divider"></div>
+        <div class="stat"><span class="stat-num" data-target="{{ stats.bookings }}">0</span><span class="stat-label">Happy Travelers</span></div>
+        <div class="stat-divider"></div>
+        <div class="stat"><span class="stat-num" data-target="{{ stats.packages }}">0</span><span class="stat-label">Tour Packages</span></div>
+        <div class="stat-divider"></div>
+        <div class="stat"><span class="stat-num" data-target="4">0</span><span class="stat-label">Years of Trust</span></div>
+    </div>
+</section>
+
+<!-- FEATURED DESTINATIONS -->
+<section class="section">
+    <div class="container">
+        <div class="section-header">
+            <div class="section-badge">✦ Top Picks</div>
+            <h2>Popular Destinations</h2>
+            <p>Discover India's most loved travel spots, curated for extraordinary experiences.</p>
+        </div>
+        <div class="destinations-grid">
+            {% for dest in destinations %}
+            <article class="dest-card" style="animation-delay: {{ loop.index0 * 0.1 }}s">
+                <div class="dest-img-wrap">
+                    <img src="{{ dest.image_url }}" alt="{{ dest.name }}" loading="lazy">
+                    <div class="dest-category">{{ dest.category }}</div>
+                    <div class="dest-rating"><i class="fas fa-star"></i> {{ dest.rating }}</div>
+                </div>
+                <div class="dest-body">
+                    <div class="dest-location"><i class="fas fa-map-marker-alt"></i> {{ dest.city }}, {{ dest.country }}</div>
+                    <h3 class="dest-name">{{ dest.name }}</h3>
+                    <p class="dest-desc">{{ dest.description[:90] }}...</p>
+                    <div class="dest-footer">
+                        <div class="dest-price">
+                            <span class="price-from">from</span>
+                            <span class="price-val">₹{{ '{:,.0f}'.format(dest.price_per_person) }}</span>
+                            <span class="price-per">/person</span>
+                        </div>
+                        <a href="{{ url_for('destination_detail', dest_id=dest.id) }}" class="btn btn-sm">View Details</a>
+                    </div>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+        <div class="text-center mt-40">
+            <a href="{{ url_for('destinations') }}" class="btn btn-outline btn-lg">View All Destinations <i class="fas fa-arrow-right"></i></a>
+        </div>
+    </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features-section">
+    <div class="container">
+        <div class="section-header light">
+            <div class="section-badge">✦ Why Choose Us</div>
+            <h2>Travel With Confidence</h2>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card"><div class="feature-icon"><i class="fas fa-shield-alt"></i></div><h3>Safe & Secure</h3><p>Fully vetted destinations with 24/7 support.</p></div>
+            <div class="feature-card"><div class="feature-icon"><i class="fas fa-tags"></i></div><h3>Best Prices</h3><p>No hidden fees. Price match guarantee.</p></div>
+            <div class="feature-card"><div class="feature-icon"><i class="fas fa-headset"></i></div><h3>24/7 Support</h3><p>Always here when you need us, wherever you are.</p></div>
+            <div class="feature-card"><div class="feature-icon"><i class="fas fa-map-marked-alt"></i></div><h3>Expert Guides</h3><p>Local expert guides for authentic experiences.</p></div>
+        </div>
+    </div>
+</section>
+
+<!-- PACKAGES -->
+<section class="section">
+    <div class="container">
+        <div class="section-header">
+            <div class="section-badge">✦ Featured Packages</div>
+            <h2>Curated Tour Packages</h2>
+            <p>All-inclusive packages designed for every kind of traveler.</p>
+        </div>
+        <div class="packages-grid">
+            {% for pkg in packages %}
+            <article class="pkg-card">
+                <div class="pkg-img"><img src="{{ pkg.image_url }}" alt="{{ pkg.name }}"></div>
+                <div class="pkg-body">
+                    <div class="pkg-meta"><span><i class="fas fa-clock"></i> {{ pkg.duration_days }} Days</span></div>
+                    <h3>{{ pkg.name }}</h3>
+                    <p>{{ pkg.description }}</p>
+                    <div class="pkg-includes"><strong>Includes:</strong> {{ pkg.includes }}</div>
+                    <div class="pkg-footer">
+                        <div class="pkg-price">₹{{ '{:,.0f}'.format(pkg.price) }} <span>/person</span></div>
+                        <a href="{{ url_for('packages') }}" class="btn btn-primary">Book Package</a>
+                    </div>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+    <div class="container">
+        <div class="cta-card">
+            <div class="cta-text">
+                <h2>Ready to Start Your Adventure?</h2>
+                <p>Join thousands of happy travelers exploring India with WanderLux.</p>
+            </div>
+            <div class="cta-actions">
+                <a href="{{ url_for('register') }}" class="btn btn-white btn-lg">Get Started Free</a>
+                <a href="{{ url_for('contact') }}" class="btn btn-outline-white btn-lg">Talk to an Expert</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Live search
+const input = document.getElementById('heroSearch');
+const resultsBox = document.getElementById('searchResults');
+let timer;
+input.addEventListener('input', function() {
+    clearTimeout(timer);
+    if (this.value.length < 2) { resultsBox.innerHTML = ''; resultsBox.style.display='none'; return; }
+    timer = setTimeout(() => {
+        fetch(`/api/search?q=${encodeURIComponent(this.value)}`)
+            .then(r => r.json()).then(data => {
+                if (!data.length) { resultsBox.style.display='none'; return; }
+                resultsBox.innerHTML = data.map(d =>
+                    `<a href="/destination/${d.id}" class="search-result-item">
+                        <span class="sr-name">${d.name}</span>
+                        <span class="sr-loc">${d.city}, ${d.country}</span>
+                        <span class="sr-cat">${d.category}</span>
+                    </a>`).join('');
+                resultsBox.style.display = 'block';
+            });
+    }, 300);
+});
+document.addEventListener('click', e => {
+    if (!input.contains(e.target)) { resultsBox.style.display='none'; }
+});
+
+// Counter animation
+const counters = document.querySelectorAll('.stat-num');
+const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            const el = entry.target;
+            const target = parseInt(el.dataset.target);
+            let count = 0;
+            const step = Math.ceil(target / 50);
+            const timer = setInterval(() => {
+                count += step;
+                if (count >= target) { el.textContent = target + (target > 10 ? '+' : ''); clearInterval(timer); }
+                else el.textContent = count;
+            }, 30);
+            observer.unobserve(el);
+        }
+    });
+});
+counters.forEach(c => observer.observe(c));
+</script>
+{% endblock %}

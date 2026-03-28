@@ -1,0 +1,40 @@
+{% extends 'admin/base.html' %}
+{% block admin_content %}
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:28px">
+    <h1 class="admin-page-title" style="margin:0">Manage Destinations</h1>
+    <a href="{{ url_for('add_destination') }}" class="btn btn-primary"><i class="fas fa-plus"></i> Add Destination</a>
+</div>
+<div class="table-card">
+    <div style="overflow-x:auto">
+    <table class="data-table">
+        <thead>
+            <tr><th>ID</th><th>Name</th><th>Location</th><th>Category</th><th>Price/Person</th><th>Rating</th><th>Slots</th><th>Actions</th></tr>
+        </thead>
+        <tbody>
+            {% for d in destinations %}
+            <tr>
+                <td>#{{ d.id }}</td>
+                <td>
+                    <div style="display:flex;align-items:center;gap:10px">
+                        <img src="{{ d.image_url }}" style="width:44px;height:44px;border-radius:8px;object-fit:cover">
+                        <strong>{{ d.name }}</strong>
+                    </div>
+                </td>
+                <td>{{ d.city }}, {{ d.country }}</td>
+                <td><span class="status-badge status-confirmed">{{ d.category }}</span></td>
+                <td>₹{{ '{:,.0f}'.format(d.price_per_person) }}</td>
+                <td><span style="color:var(--accent);font-weight:600">★ {{ d.rating }}</span></td>
+                <td>{{ d.available_slots }} / {{ d.max_capacity }}</td>
+                <td style="white-space:nowrap">
+                    <a href="{{ url_for('destination_detail', dest_id=d.id) }}" class="btn btn-outline btn-sm" target="_blank">View</a>
+                    <a href="{{ url_for('delete_destination', dest_id=d.id) }}"
+                       onclick="return confirm('Delete {{ d.name }}?')"
+                       class="btn btn-danger btn-sm">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    </div>
+</div>
+{% endblock %}

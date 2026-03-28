@@ -1,0 +1,66 @@
+{% extends 'admin/base.html' %}
+{% block admin_content %}
+<h1 class="admin-page-title">Dashboard</h1>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-icon green"><i class="fas fa-users"></i></div>
+        <div class="stat-card-info"><h3>{{ stats.total_users }}</h3><p>Total Users</p></div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon blue"><i class="fas fa-calendar-check"></i></div>
+        <div class="stat-card-info"><h3>{{ stats.total_bookings }}</h3><p>Total Bookings</p></div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon orange"><i class="fas fa-clock"></i></div>
+        <div class="stat-card-info"><h3>{{ stats.pending_bookings }}</h3><p>Pending</p></div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon teal"><i class="fas fa-check-circle"></i></div>
+        <div class="stat-card-info"><h3>{{ stats.confirmed_bookings }}</h3><p>Confirmed</p></div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon purple"><i class="fas fa-rupee-sign"></i></div>
+        <div class="stat-card-info"><h3>₹{{ '{:,.0f}'.format(stats.total_revenue) }}</h3><p>Revenue</p></div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon blue"><i class="fas fa-map-marker-alt"></i></div>
+        <div class="stat-card-info"><h3>{{ stats.total_destinations }}</h3><p>Destinations</p></div>
+    </div>
+</div>
+
+<div class="table-card">
+    <div class="table-header">
+        <h3>Recent Bookings</h3>
+        <a href="{{ url_for('admin_bookings') }}" class="btn btn-outline btn-sm">View All</a>
+    </div>
+    <div style="overflow-x:auto">
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>#</th><th>User</th><th>Destination</th><th>Date</th><th>Persons</th><th>Amount</th><th>Status</th><th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for b in recent_bookings %}
+            <tr>
+                <td>#{{ b.id }}</td>
+                <td><strong>{{ b.user_name }}</strong></td>
+                <td>{{ b.dest_name }}</td>
+                <td>{{ b.travel_date }}</td>
+                <td>{{ b.num_persons }}</td>
+                <td>₹{{ '{:,.0f}'.format(b.total_price) }}</td>
+                <td><span class="status-badge status-{{ b.status }}">{{ b.status.title() }}</span></td>
+                <td>
+                    {% if b.status == 'pending' %}
+                    <a href="{{ url_for('update_booking_status', booking_id=b.id, status='confirmed') }}" class="btn btn-success btn-sm">Confirm</a>
+                    <a href="{{ url_for('update_booking_status', booking_id=b.id, status='cancelled') }}" class="btn btn-danger btn-sm">Cancel</a>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    </div>
+</div>
+{% endblock %}
