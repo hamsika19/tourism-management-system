@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% block title %}Book {{ dest.name }} - Beaches2Mountains{% endblock %}
+{% block content %}
+<div class="book-page">
+    <h1 class="page-title">Book Your Trip</h1>
+    <div class="book-dest-info">
+        <div class="book-dest-img">
+            <img src="{{ dest.image_url }}" alt="{{ dest.name }}">
+        </div>
+        <div class="book-dest-body">
+            <span style="background:var(--primary-light);color:var(--primary);padding:3px 12px;border-radius:50px;font-size:12px;font-weight:600">{{ dest.category }}</span>
+            <h2 style="margin-top:10px">{{ dest.name }}</h2>
+            <p style="color:var(--text-muted);font-size:14px"><i class="fas fa-map-marker-alt" style="color:var(--primary)"></i> {{ dest.city }}, {{ dest.country }}</p>
+            <p style="color:var(--text-muted);font-size:14px;margin-top:8px">{{ dest.description[:120] }}...</p>
+            <div style="margin-top:12px;font-size:22px;font-weight:700;font-family:var(--font-display);color:var(--primary)">
+                ₹{{ '{:,.0f}'.format(dest.price_per_person) }} <span style="font-size:14px;font-weight:400;color:var(--text-muted);font-family:var(--font-body)">/per person</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="book-form-card">
+        <h3 style="font-family:var(--font-display);font-size:22px;margin-bottom:24px">Booking Details</h3>
+        <form method="POST">
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label"><i class="fas fa-calendar"></i> Travel Date</label>
+                    <input type="date" name="travel_date" class="form-control" min="{{ today }}" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label"><i class="fas fa-calendar-check"></i> Return Date</label>
+                    <input type="date" name="return_date" class="form-control" min="{{ today }}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label"><i class="fas fa-users"></i> Number of Persons</label>
+                <input type="number" name="num_persons" id="num_persons" class="form-control" min="1" max="{{ dest.available_slots }}" value="1" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label"><i class="fas fa-comment"></i> Special Requests (Optional)</label>
+                <textarea name="special_requests" class="form-control" rows="3" placeholder="Any special requirements, dietary restrictions, etc."></textarea>
+            </div>
+
+            <div class="price-summary">
+                <div class="price-row">
+                    <span>Price per person</span>
+                    <span>₹{{ '{:,.0f}'.format(dest.price_per_person) }}</span>
+                </div>
+                <div class="price-row">
+                    <span>No. of persons</span>
+                    <span id="persons_count">1</span>
+                </div>
+                <div class="price-row total">
+                    <span>Total Amount</span>
+                    <span id="total_price">₹{{ '{:,.0f}'.format(dest.price_per_person) }}</span>
+                </div>
+            </div>
+
+            <div style="display:flex;gap:12px;margin-top:24px">
+                <button type="submit" class="btn btn-primary btn-lg"><i class="fas fa-check"></i> Confirm Booking</button>
+                <a href="{{ url_for('destination_detail', dest_id=dest.id) }}" class="btn btn-outline btn-lg">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script>
+window.PRICE_PER_PERSON = {{ dest.price_per_person }};
+document.getElementById('num_persons').addEventListener('input', function() {
+    const n = parseInt(this.value) || 1;
+    document.getElementById('persons_count').textContent = n;
+    document.getElementById('total_price').textContent = '₹' + (n * window.PRICE_PER_PERSON).toLocaleString('en-IN');
+});
+</script>
+{% endblock %}

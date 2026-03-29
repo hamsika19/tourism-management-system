@@ -1,0 +1,65 @@
+{% extends 'admin/base.html' %}
+{% block admin_content %}
+<div style="max-width:700px">
+    <div style="display:flex;align-items:center;gap:16px;margin-bottom:28px">
+        <a href="{{ url_for('admin_destinations') }}" class="btn btn-outline btn-sm"><i class="fas fa-arrow-left"></i> Back</a>
+        <h1 class="admin-page-title" style="margin:0">Add New Destination</h1>
+    </div>
+    <div style="background:white;border-radius:var(--radius);box-shadow:var(--card-shadow);padding:36px">
+        <form method="POST">
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Destination Name *</label>
+                    <input type="text" name="name" class="form-control" placeholder="e.g. Taj Mahal" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Category *</label>
+                    <select name="category" class="form-control" required>
+                        <option value="">Select category</option>
+                        <option value="Beach">Beach</option>
+                        <option value="Adventure">Adventure</option>
+                        <option value="Heritage">Heritage</option>
+                        <option value="Nature">Nature</option>
+                        <option value="City">City</option>
+                        <option value="Pilgrimage">Pilgrimage</option>
+                        <option value="Hill Station">Hill Station</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Country *</label>
+                    <input type="text" name="country" class="form-control" placeholder="e.g. India" required value="India">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">City *</label>
+                    <input type="text" name="city" class="form-control" placeholder="e.g. Agra" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Description *</label>
+                <textarea name="description" class="form-control" rows="4" placeholder="Describe this destination..." required></textarea>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Image URL</label>
+                <input type="url" name="image_url" class="form-control" placeholder="https://images.unsplash.com/...">
+                <small style="color:var(--text-muted);font-size:12px">Use a direct image URL (Unsplash recommended)</small>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Price Per Person (₹) *</label>
+                    <input type="number" name="price" class="form-control" placeholder="e.g. 5000" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Max Capacity *</label>
+                    <input type="number" name="capacity" class="form-control" placeholder="e.g. 100" min="1" required>
+                </div>
+            </div>
+            <div style="display:flex;gap:12px;margin-top:8px">
+                <button type="submit" class="btn btn-primary btn-lg"><i class="fas fa-plus"></i> Add Destination</button>
+                <a href="{{ url_for('admin_destinations') }}" class="btn btn-outline btn-lg">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

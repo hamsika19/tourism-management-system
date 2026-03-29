@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+{% block title %}{{ dest.name }} - Beaches2Mountains{% endblock %}
+{% block content %}
+
+<div class="detail-hero">
+    <img src="{{ dest.image_url }}" alt="{{ dest.name }}">
+    <div class="detail-hero-overlay"></div>
+    <div class="detail-hero-content">
+        <div class="info-chips" style="margin-bottom:10px">
+            <span class="info-chip"><i class="fas fa-tag"></i>{{ dest.category }}</span>
+            <span class="info-chip"><i class="fas fa-star"></i> {{ dest.rating }} Rating</span>
+            <span class="info-chip"><i class="fas fa-users"></i> {{ dest.available_slots }} slots left</span>
+        </div>
+        <h1>{{ dest.name }}</h1>
+        <p style="opacity:0.85;font-size:17px"><i class="fas fa-map-marker-alt"></i> {{ dest.city }}, {{ dest.country }}</p>
+    </div>
+</div>
+
+<div class="detail-body">
+    <div class="detail-main">
+        <h2>About {{ dest.name }}</h2>
+        <p>{{ dest.description }}</p>
+        <div class="info-chips">
+            <span class="info-chip"><i class="fas fa-map-marker-alt"></i> {{ dest.city }}, {{ dest.country }}</span>
+            <span class="info-chip"><i class="fas fa-users"></i> Max {{ dest.max_capacity }} people</span>
+            <span class="info-chip"><i class="fas fa-rupee-sign"></i> ₹{{ '{:,.0f}'.format(dest.price_per_person) }}/person</span>
+        </div>
+
+        <!-- REVIEWS -->
+        <div class="reviews-section">
+            <h2 style="font-family:var(--font-display);font-size:24px;margin-bottom:20px">
+                Reviews ({{ reviews|length }})
+            </h2>
+            {% if reviews %}
+                {% for r in reviews %}
+                <div class="review-card">
+                    <div class="review-header">
+                        <div>
+                            <span class="review-author">{{ r.user_name }}</span>
+                            <div class="review-stars">{% for i in range(r.rating) %}⭐{% endfor %}</div>
+                        </div>
+                        <span class="review-date">{{ r.created_at[:10] }}</span>
+                    </div>
+                    <p style="color:var(--text-muted);font-size:15px">{{ r.comment }}</p>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p style="color:var(--text-muted);padding:20px 0">No reviews yet. Be the first to review!</p>
+            {% endif %}
+
+            {% if session.user_id %}
+            <div class="review-form">
+                <h4 style="margin-bottom:14px;font-family:var(--font-display)">Write a Review</h4>
+                <form method="POST" action="{{ url_for('add_review', dest_id=dest.id) }}">
+                    <div class="star-select" style="margin-bottom:14px">
+                        {% for i in [5,4,3,2,1] %}
+                        <input type="radio" name="rating" id="star{{ i }}" value="{{ i }}" {% if i==5 %}checked{% endif %}>
+                        <label for="star{{ i }}">★</label>
+                        {% endfor %}
+                    </div>
+                    <textarea name="comment" class="form-control" rows="3" placeholder="Share your experience..." required style="resize:vertical;margin-bottom:12px"></textarea>
+                    <button type="submit" class="btn btn-primary">Submit Review</button>
+                </form>
+            </div>
+            {% else %}
+            <p style="margin-top:16px;color:var(--text-muted)"><a href="{{ url_for('login') }}" style="color:var(--primary);font-weight:600">Login</a> to write a review.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- BOOKING WIDGET -->
+    <div class="booking-widget">
+        <h3>Book Your Trip</h3>
+        <div class="booking-price">₹{{ '{:,.0f}'.format(dest.price_per_person) }} <span>/per person</span></div>
+        {% if dest.available_slots > 0 %}
+            <div class="info-chip" style="margin-bottom:16px;background:#dcfce7;color:#166534">
+                <i class="fas fa-check-circle"></i> {{ dest.available_slots }} slots available
+            </div>
+        {% else %}
+            <div class="info-chip" style="margin-bottom:16px;background:#fee2e2;color:#991b1b">
+                <i class="fas fa-times-circle"></i> Fully Booked
+            </div>
+        {% endif %}
+        {% if session.user_id %}
+            {% if dest.available_slots > 0 %}
+            <a href="{{ url_for('book', dest_id=dest.id) }}" class="btn btn-primary" style="width:100%;justify-content:center;margin-bottom:12px">
+                <i class="fas fa-calendar-check"></i> Book Now
+            </a>
+            {% endif %}
+        {% else %}
+        <a href="{{ url_for('login') }}" class="btn btn-primary" style="width:100%;justify-content:center">
+            <i class="fas fa-lock"></i> Login to Book
+        </a>
+        {% endif %}
+        <div style="margin-top:20px;border-top:1px solid var(--border);padding-top:16px">
+            <div style="display:flex;justify-content:space-between;font-size:14px;margin-bottom:8px;color:var(--text-muted)">
+                <span>Category</span><span style="color:var(--text);font-weight:500">{{ dest.category }}</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:14px;margin-bottom:8px;color:var(--text-muted)">
+                <span>Location</span><span style="color:var(--text);font-weight:500">{{ dest.city }}</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:14px;color:var(--text-muted)">
+                <span>Rating</span><span style="color:var(--accent);font-weight:600">★ {{ dest.rating }}/5</span>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
